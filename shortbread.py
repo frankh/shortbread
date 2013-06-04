@@ -26,6 +26,7 @@ def shortbread(short, bread, word_list, letters, depth_first):
 		new_words = iter([(starting_word, [starting_word])])
 
 		# The function will return when new_words throws StopIteration
+		# Loop forever until that happens.
 		while True:
 			next_word, path = new_words.next()
 			
@@ -42,10 +43,13 @@ def shortbread(short, bread, word_list, letters, depth_first):
 
 			yield next_word, path
 
-	# Double ended breadth first search.
+	# Double ended search.
 	for (lword, lpath), (rword, rpath) in \
 	itertools.izip(words_gen(short, word_list, depth_first), 
 				   words_gen(bread, word_list, depth_first)):
+		# check if we have a common word.
+		# If we do, reverse the right path (it started from the end)
+		# and strip the common word.
 		if lword in rpaths:
 			return lpath + rpaths[lword][::-1][1:]
 		if rword in lpaths:
