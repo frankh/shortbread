@@ -9,7 +9,7 @@ def shortbread(short, bread, word_list, letters, depth_first):
 	def mutate_word(word, path, word_list):
 		# For each letter in the word, replace it with
 		# each valid letter and check if it's a word.
-		for i, unused in enumerate(word):
+		for i in range(len(word)):
 			for letter in letters:
 				new_word = word[:i] + letter + word[i+1:]
 				if new_word in word_list:
@@ -28,7 +28,7 @@ def shortbread(short, bread, word_list, letters, depth_first):
 		# The function will return when new_words throws StopIteration
 		while True:
 			next_word, path = new_words.next()
-			
+
 			if depth_first:
 				new_words = itertools.chain(
 					mutate_word(next_word, path, word_list), 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
 	assert(len(short) == len(bread)), "Both words must be the same length"
 
-	words_content = open('words').read()
+	words_content = open('/usr/share/dict/british-english').read()
 	word_list = set(word for word in words_content.split() 
 		                          if len(word) == len(bread))
 
