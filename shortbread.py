@@ -9,7 +9,7 @@ def shortbread(short, bread, word_list, letters, depth_first):
 	def mutate_word(word, path, word_list):
 		# For each letter in the word, replace it with
 		# each valid letter and check if it's a word.
-		for i in range(len(word)):
+		for i, unused in enumerate(word):
 			for letter in letters:
 				new_word = word[:i] + letter + word[i+1:]
 				if new_word in word_list:
@@ -26,9 +26,10 @@ def shortbread(short, bread, word_list, letters, depth_first):
 		new_words = iter([(starting_word, [starting_word])])
 
 		# The function will return when new_words throws StopIteration
+		# Loop forever until that happens.
 		while True:
 			next_word, path = new_words.next()
-
+			
 			if depth_first:
 				new_words = itertools.chain(
 					mutate_word(next_word, path, word_list), 
@@ -42,10 +43,13 @@ def shortbread(short, bread, word_list, letters, depth_first):
 
 			yield next_word, path
 
-	# Double ended breadth first search.
+	# Double ended search.
 	for (lword, lpath), (rword, rpath) in \
 	itertools.izip(words_gen(short, word_list, depth_first), 
 				   words_gen(bread, word_list, depth_first)):
+		# check if we have a common word.
+		# If we do, reverse the right path (it started from the end)
+		# and strip the common word.
 		if lword in rpaths:
 			return lpath + rpaths[lword][::-1][1:]
 		if rword in lpaths:
@@ -105,7 +109,7 @@ if __name__ == '__main__':
 
 	assert(len(short) == len(bread)), "Both words must be the same length"
 
-	words_content = open('/usr/share/dict/british-english').read()
+	words_content = open('words').read()
 	word_list = set(word for word in words_content.split() 
 		                          if len(word) == len(bread))
 
